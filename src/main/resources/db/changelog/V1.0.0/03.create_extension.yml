@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: "03.create_extension.yml"
+      author: "mloleg"
+      runInTransaction: false
+      changes:
+        - sql:
+            dbms: "postgresql"
+            sql: CREATE EXTENSION IF NOT EXISTS pg_trgm;
+        - sql:
+            dbms: "postgresql"
+            sql: CREATE EXTENSION IF NOT EXISTS btree_gin;

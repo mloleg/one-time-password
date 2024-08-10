@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: one-time-password
+  datasource:
+    url: jdbc:postgresql://localhost:5434/one-time-password
+    username: postgres
+    password: 123456
+    hikari:
+      schema: one_time_password
+      connection-init-sql: CREATE SCHEMA IF NOT EXISTS ${spring.datasource.hikari.schema}
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/changelog-master.yml
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.format_sql: true
+    show-sql: true
+  kafka:
+    bootstrap-servers:
+      - localhost:29092
+    producer:
+      acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: tg-mentoring-otp-bot
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        "[spring.json.value.default.type]": "ru.mloleg.onetimepassword.dto.OTPMessageIn"
+#        "[spring.json.trusted.packages]": "ru.mloleg"
+
+
+otp:
+  kafka:
+    send-otp:
+      enabled: true
+      topic-in: Send.Otp.IN.V1
+      topic-out: Send.Otp.OUT.V2
+
+server:
+  port: 8081

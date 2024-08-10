@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: "05.create_check_otp_index.yml"
+      author: "mloleg"
+      runInTransaction: false
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  descending: false
+                  name: check_time
+            indexName: check_otp_check_time_idx
+            tableName: check_otp

@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: "04.create_send_otp_index.yml"
+      author: "mloleg"
+      runInTransaction: false
+      changes:
+        - sql:
+            dbms: "postgresql"
+            sql: CREATE INDEX CONCURRENTLY send_otp_telegram_chat_id_idx ON send_otp USING gin (telegram_chat_id);
+        - sql:
+            dbms: "postgresql"
+            sql: CREATE INDEX CONCURRENTLY send_otp_message_idx ON send_otp USING gin (message);
+        - createIndex:
+            columns:
+              - column:
+                  descending: false
+                  name: send_time
+            indexName: send_otp_send_time_idx
+            tableName: send_otp

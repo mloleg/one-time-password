@@ -24,13 +24,14 @@ public class OTPExceptionHandler {
 
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 
-        List<ValidationError> validationErrors =
-                fieldErrors.stream()
-                           .map(validationError -> ValidationError.builder()
-                                                                  .field(validationError.getField())
-                                                                  .message(validationError.getDefaultMessage())
-                                                                  .build())
-                           .toList();
+        List<ValidationError> validationErrors = fieldErrors
+            .stream()
+            .map(validationError ->
+                ValidationError.builder()
+                               .field(validationError.getField())
+                               .message(validationError.getDefaultMessage())
+                               .build())
+            .toList();
 
         log.error("Ошибка валидации ответа: {}", validationErrors, e);
 
