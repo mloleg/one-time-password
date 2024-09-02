@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record MessageOut(
+public record MessageResponse(
         UUID id,
         MessageStatus status,
         String errorMessage) {

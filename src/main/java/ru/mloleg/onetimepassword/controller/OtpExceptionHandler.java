@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.mloleg.onetimepassword.dto.common.CommonResponse;
 import ru.mloleg.onetimepassword.dto.common.ValidationError;
+import ru.mloleg.onetimepassword.exception.OtpException;
 
 import java.util.List;
 
 @Slf4j
 @RestControllerAdvice
-public class OTPExceptionHandler {
+public class OtpExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -25,20 +26,30 @@ public class OTPExceptionHandler {
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 
         List<ValidationError> validationErrors = fieldErrors
-            .stream()
-            .map(validationError ->
-                ValidationError.builder()
-                               .field(validationError.getField())
-                               .message(validationError.getDefaultMessage())
-                               .build())
-            .toList();
+                .stream()
+                .map(validationError ->
+                        ValidationError.builder()
+                                .field(validationError.getField())
+                                .message(validationError.getDefaultMessage())
+                                .build())
+                .toList();
 
         log.error("Ошибка валидации ответа: {}", validationErrors, e);
 
         return CommonResponse.builder()
-                             .errorMessage("Ошибка валидации")
-                             .validationErrorList(validationErrors)
-                             .build();
+                .errorMessage("Ошибка валидации")
+                .validationErrorList(validationErrors)
+                .build();
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(OtpException.class)
+    public CommonResponse<?> handleOTPException(Exception e) {
+        log.error("Произошла ошибка: {}", e.getMessage(), e);
+
+        return CommonResponse.builder()
+                .errorMessage("Произошла ошибка: {}" + e.getMessage())
+                .build();
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -47,7 +58,7 @@ public class OTPExceptionHandler {
         log.error("Произошла ошибка: {}", e.getMessage(), e);
 
         return CommonResponse.builder()
-                             .errorMessage("Произошла ошибка: {}" + e.getMessage())
-                             .build();
+                .errorMessage("Произошла ошибка: {}" + e.getMessage())
+                .build();
     }
 }

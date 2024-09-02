@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.util.UUID;
 
 @Builder
-public record MessageIn(
+public record MessageRequest(
         UUID id,
         String telegramChatId,
         String message) {

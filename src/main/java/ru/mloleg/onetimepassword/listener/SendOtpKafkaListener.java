@@ -6,8 +6,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-import ru.mloleg.onetimepassword.client.SendOtpKafkaProducer;
-import ru.mloleg.onetimepassword.dto.MessageIn;
+import ru.mloleg.onetimepassword.dto.MessageResponse;
+import ru.mloleg.onetimepassword.service.KafkaMessageContext;
 
 @Slf4j
 @Service
@@ -15,12 +15,15 @@ import ru.mloleg.onetimepassword.dto.MessageIn;
 @ConditionalOnProperty(prefix = "otp.kafka.send-otp", name = "enabled", havingValue = "true")
 public class SendOtpKafkaListener {
 
-    private final SendOtpKafkaProducer kafkaProducer;
+    private final KafkaMessageContext kafkaMessageContext;
 
-    @KafkaListener(topics = "${otp.kafka.send-otp.topic-in}")
-    public void consumeSendOtp(ConsumerRecord<String, MessageIn> record) {
+    @KafkaListener(topics = "${otp.kafka.send-otp.topic-out}")
+    public void consumeRequest(ConsumerRecord<String, MessageResponse> record) {
         log.info("Запрос получен: {}", record);
 
-        kafkaProducer.sendResponse(record.value().id());
+        MessageResponse message = record.value();
+
+        kafkaMessageContext.findById(message.id().toString())
+                .complete(message);
     }
 }

@@ -10,4 +10,5 @@ import java.util.List;
 public record CommonResponse<T>(T body,
                                 String errorMessage,
                                 List<ValidationError> validationErrorList) {
+
 }

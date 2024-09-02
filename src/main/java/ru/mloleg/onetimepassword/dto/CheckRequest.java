@@ -9,7 +9,7 @@ import java.util.UUID;
 public record CheckRequest(
         @NotNull(message = "UUID не может быть пустым")
         UUID processId,
-        @NotNull(message = "Одноразовый крд не может быть пустым")
+        @NotNull(message = "Одноразовый код не может быть пустым")
         Integer otp) {
 
 }
